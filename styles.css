@@ -33,9 +33,9 @@ html, body {
 
   color: white;
   font-size: clamp(16px, 5vw, 48px); /* scales with screen width */
-  border: 3px solid white;
+  border: 2px solid white;
   padding: 10px 20px;
-  letter-spacing: clamp(1px, 0.5vw, 4px);
+  letter-spacing: clamp(1px, 0.5vw, 3px);
 
   background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(2px);  
@@ -64,18 +64,4 @@ html, body {
 .content h1 {
   font-size: 3.0rem;
   margin-bottom: 20px;
-}
-
-.btn {
-  display: inline-block;
-  background-color: white;
-  color: #0f2f2f;
-  padding: 10px 20px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background 0.3s;
-}
-
-.btn:hover {
-  background-color: #ddd;
 }
