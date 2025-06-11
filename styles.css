@@ -35,7 +35,7 @@ html, body {
   font-size: clamp(16px, 5vw, 48px); /* scales with screen width */
   border: 3px solid white;
   padding: 10px 20px;
-  letter-spacing: 4px;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
 
   background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(2px);  
