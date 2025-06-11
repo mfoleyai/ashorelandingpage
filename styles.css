@@ -28,10 +28,12 @@ html, body {
 
 .logo {
   color: white;
-  font-size: 48px;
+  font-size: clamp(24px, 4vw, 64px);
   border: 3px solid white;
-  padding: 10px 20px;
+  padding: 14px 28px;
   letter-spacing: 6px;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
 }
 
 .logo-wrapper {
