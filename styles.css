@@ -34,6 +34,13 @@ html, body {
   letter-spacing: 4px;
 }
 
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 .right-half {
   flex: 1;
   background-color: #0f2f2f;
