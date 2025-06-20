@@ -9,6 +9,34 @@ html, body {
   font-family: 'Helvetica Neue', sans-serif;
 }
 
+/* Navigation */
+.navigation {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  gap: 15px;
+}
+
+.navigation a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.navigation a:hover,
+.navigation a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
 .container {
   display: flex;
   height: 100vh;
@@ -64,4 +92,70 @@ html, body {
 .content h1 {
   font-size: 3.0rem;
   margin-bottom: 20px;
+}
+
+/* Support Page Styles */
+.support-content {
+  max-width: 600px;
+  text-align: left;
+}
+
+.support-section {
+  margin-bottom: 30px;
+}
+
+.support-section h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #64b5f6;
+}
+
+.support-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #81c784;
+}
+
+.support-section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  color: #e0e0e0;
+}
+
+.contact-options {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.contact-item {
+  flex: 1;
+  min-width: 200px;
+}
+
+.contact-item strong {
+  display: block;
+  color: #fff;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+}
+
+.faq-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.faq-item strong {
+  display: block;
+  color: #fff;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.faq-item p {
+  margin: 0;
 }
