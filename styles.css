@@ -195,3 +195,19 @@ html, body {
 .privacy-list li strong {
   color: #fff;
 }
+
+/* Privacy policy link styles */
+.support-content a {
+  color: #81c784; /* Light green to match h3 headers */
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.support-content a:hover {
+  color: #a5d6a7; /* Lighter green on hover */
+  text-decoration: underline;
+}
+
+.support-content a:visited {
+  color: #90caf9; /* Light blue for visited links */
+}
