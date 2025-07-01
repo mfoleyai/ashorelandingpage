@@ -33,65 +33,142 @@
   </div>
 
   <script>
-    // Simple markdown parser for basic elements
+    // Enhanced markdown parser
     function parseMarkdown(markdown) {
-      let html = markdown
-        // Headers
-        .replace(/^### (.+$)/gm, '<h3>$1</h3>')
-        .replace(/^## (.+$)/gm, '<h2>$1</h2>')
-        .replace(/^# (.+$)/gm, '<h1>$1</h1>')
-        
-        // Bold text
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        
-        // Links
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-        
-        // Convert line breaks to HTML
-        .replace(/\n\n/g, '</p><p>')
-        .replace(/\n/g, '<br>');
-
-      // Handle lists
-      const lines = html.split('<br>');
-      let inList = false;
-      let result = [];
+      // Remove the first H1 title since we already have it in HTML
+      markdown = markdown.replace(/^# Privacy Policy\s*\n/m, '');
       
-      for (let line of lines) {
-        const trimmed = line.trim();
-        if (trimmed.startsWith('- ')) {
-          if (!inList) {
-            result.push('<ul class="privacy-list">');
-            inList = true;
+      // Process text transformations first
+      let processedText = markdown
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+      
+      // Split into sections by ## headers
+      const sections = processedText.split(/(?=^## )/m);
+      let html = '';
+      
+      sections.forEach((section, index) => {
+        section = section.trim();
+        if (!section) return;
+        
+        let sectionHtml = '<div class="support-section">';
+        const lines = section.split('\n');
+        let currentParagraph = '';
+        let inList = false;
+        
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          const trimmed = line.trim();
+          
+          // Headers
+          if (trimmed.startsWith('## ')) {
+            if (currentParagraph) {
+              sectionHtml += '<p>' + currentParagraph + '</p>';
+              currentParagraph = '';
+            }
+            if (inList) {
+              sectionHtml += '</ul>';
+              inList = false;
+            }
+            sectionHtml += '<h2>' + trimmed.replace(/^## /, '') + '</h2>';
+            continue;
           }
-          result.push('<li>' + trimmed.substring(2) + '</li>');
-        } else {
-          if (inList) {
-            result.push('</ul>');
+          
+          if (trimmed.startsWith('### ')) {
+            if (currentParagraph) {
+              sectionHtml += '<p>' + currentParagraph + '</p>';
+              currentParagraph = '';
+            }
+            if (inList) {
+              sectionHtml += '</ul>';
+              inList = false;
+            }
+            sectionHtml += '<h3>' + trimmed.replace(/^### /, '') + '</h3>';
+            continue;
+          }
+          
+          // Lists
+          if (trimmed.startsWith('- ')) {
+            if (currentParagraph) {
+              sectionHtml += '<p>' + currentParagraph + '</p>';
+              currentParagraph = '';
+            }
+            if (!inList) {
+              sectionHtml += '<ul class="privacy-list">';
+              inList = true;
+            }
+            sectionHtml += '<li>' + trimmed.substring(2) + '</li>';
+            continue;
+          }
+          
+          // End list if we hit non-list content
+          if (inList && trimmed && !trimmed.startsWith('- ')) {
+            sectionHtml += '</ul>';
             inList = false;
           }
-          if (trimmed) {
-            result.push(line);
+          
+          // Special handling for Contact Information
+          if (trimmed.startsWith('<strong>Company Name:</strong>') || trimmed.startsWith('<strong>Email:</strong>')) {
+            if (currentParagraph) {
+              sectionHtml += '<p>' + currentParagraph + '</p>';
+              currentParagraph = '';
+            }
+            
+            if (trimmed.startsWith('<strong>Company Name:</strong>')) {
+              sectionHtml += '<div class="contact-options">';
+              sectionHtml += '<div class="contact-item">';
+              sectionHtml += '<strong>Company Name</strong>';
+              sectionHtml += '<p>' + trimmed.replace('<strong>Company Name:</strong>', '').trim() + '</p>';
+              sectionHtml += '</div>';
+              
+              // Look for Email on next non-empty line
+              for (let j = i + 1; j < lines.length; j++) {
+                const nextTrimmed = lines[j].trim();
+                if (nextTrimmed.startsWith('<strong>Email:</strong>')) {
+                  sectionHtml += '<div class="contact-item">';
+                  sectionHtml += '<strong>Email</strong>';
+                  sectionHtml += '<p>' + nextTrimmed.replace('<strong>Email:</strong>', '').trim() + '</p>';
+                  sectionHtml += '</div>';
+                  i = j; // Skip to this line
+                  break;
+                } else if (nextTrimmed) {
+                  break;
+                }
+              }
+              sectionHtml += '</div>';
+            }
+            continue;
+          }
+          
+          // Empty line - end current paragraph
+          if (!trimmed) {
+            if (currentParagraph) {
+              sectionHtml += '<p>' + currentParagraph + '</p>';
+              currentParagraph = '';
+            }
+            continue;
+          }
+          
+          // Regular content
+          if (currentParagraph) {
+            currentParagraph += ' ' + trimmed;
+          } else {
+            currentParagraph = trimmed;
           }
         }
-      }
+        
+        // Close any remaining elements
+        if (currentParagraph) {
+          sectionHtml += '<p>' + currentParagraph + '</p>';
+        }
+        if (inList) {
+          sectionHtml += '</ul>';
+        }
+        
+        sectionHtml += '</div>';
+        html += sectionHtml;
+      });
       
-      if (inList) {
-        result.push('</ul>');
-      }
-      
-      // Wrap in paragraphs and add sections
-      html = '<div class="support-section"><p>' + result.join('') + '</p></div>';
-      
-      // Clean up extra paragraph tags and create proper sections
-      html = html
-        .replace(/<\/p><p><h([123])>/g, '</div><div class="support-section"><h$1>')
-        .replace(/<\/h([123])><\/p><p>/g, '</h$1>')
-        .replace(/<p><\/p>/g, '')
-        .replace(/<p><h([123])>/g, '<div class="support-section"><h$1>')
-        .replace(/<\/h([123])><\/p>/g, '</h$1>')
-        .replace(/<p><strong>([^<]+):<\/strong>/g, '<div class="contact-options"><div class="contact-item"><strong>$1</strong><p>')
-        .replace(/<p><strong>Email:<\/strong>\s*([^<]+)<\/p>/g, '<div class="contact-options"><div class="contact-item"><strong>Email</strong><p>$1</p></div></div>');
-
       return html;
     }
 
