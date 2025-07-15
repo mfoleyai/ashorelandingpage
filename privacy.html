@@ -138,6 +138,9 @@
                 }
               }
               sectionHtml += '</div>';
+            } else if (trimmed.startsWith('<strong>Email:</strong>')) {
+              // Handle standalone email lines
+              sectionHtml += '<p>' + trimmed + '</p>';  
             }
             continue;
           }
